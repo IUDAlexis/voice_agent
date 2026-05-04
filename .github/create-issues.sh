@@ -1,0 +1,308 @@
+#!/usr/bin/env bash
+# Script to create GitHub Issues for the Voice Agent project
+# Usage: bash .github/create-issues.sh
+# Requires: GitHub CLI (gh) authenticated with repo write permissions
+
+set -e
+
+REPO="IUDAlexis/voice_agent"
+
+echo "Creating labels..."
+gh label create "audio"          --color "#0075ca" --description "Audio related"        --repo "$REPO" 2>/dev/null || true
+gh label create "core"           --color "#e4e669" --description "Core functionality"   --repo "$REPO" 2>/dev/null || true
+gh label create "api-integration" --color "#d93f0b" --description "External API integration" --repo "$REPO" 2>/dev/null || true
+gh label create "stt"            --color "#bfd4f2" --description "Speech-to-Text"       --repo "$REPO" 2>/dev/null || true
+gh label create "llm"            --color "#bfe5bf" --description "Large Language Model" --repo "$REPO" 2>/dev/null || true
+gh label create "tts"            --color "#fef2c0" --description "Text-to-Speech"       --repo "$REPO" 2>/dev/null || true
+gh label create "asyncio"        --color "#c5def5" --description "Async/asyncio"        --repo "$REPO" 2>/dev/null || true
+gh label create "architecture"   --color "#84b6eb" --description "Architecture"         --repo "$REPO" 2>/dev/null || true
+gh label create "configuration"  --color "#cc317c" --description "Configuration"        --repo "$REPO" 2>/dev/null || true
+gh label create "testing"        --color "#0e8a16" --description "Testing"              --repo "$REPO" 2>/dev/null || true
+gh label create "quality"        --color "#1d76db" --description "Code quality"         --repo "$REPO" 2>/dev/null || true
+gh label create "reliability"    --color "#e11d48" --description "Reliability"          --repo "$REPO" 2>/dev/null || true
+
+echo "Creating issues..."
+
+# Issue #1: Audio Input Module
+gh issue create \
+  --repo "$REPO" \
+  --title "Audio Input Module - Micrófono" \
+  --label "audio,core,enhancement" \
+  --body "## Descripción
+Implementar el módulo completo de captura de audio del micrófono con soporte para múltiples dispositivos y manejo robusto de errores.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Clase \`Microphone\` base (estructura)
+- [ ] Implementación de inicio/parada de grabación
+- [ ] Lectura de chunks de audio en asyncio
+- [ ] Detección automática de dispositivo de entrada
+- [ ] Manejo de cambios en dispositivos durante ejecución
+- [ ] Validación de parámetros de audio
+- [ ] Tests unitarios
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Captura audio a 16kHz, 16-bit PCM
+- Latencia < 100ms entre captura y disponibilidad del dato
+- Sin interrupciones durante grabación"
+
+# Issue #2: Audio Output Module
+gh issue create \
+  --repo "$REPO" \
+  --title "Audio Output Module - Altavoz" \
+  --label "audio,core,enhancement" \
+  --body "## Descripción
+Implementar el módulo de reproducción de audio por altavoz con control de volumen y sincronización.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Clase \`Speaker\` base (estructura)
+- [ ] Implementación de reproducción de audio
+- [ ] Control de volumen en rango 0.0-1.0
+- [ ] Manejo de dispositivos múltiples
+- [ ] Buffer para reproducción suave
+- [ ] Sincronización con el pipeline
+- [ ] Tests unitarios
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Reproducción sin interrupciones
+- Control de volumen funcional
+- Sincronización con generación de audio"
+
+# Issue #3: Speech-to-Text Integration
+gh issue create \
+  --repo "$REPO" \
+  --title "Speech-to-Text Integration" \
+  --label "stt,core,api-integration" \
+  --body "## Descripción
+Implementar la integración con OpenAI Whisper para transcripción de audio a texto.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Clase \`STTProvider\` base
+- [x] Estructura de \`WhisperSTT\`
+- [ ] Implementación real de transcripción con Whisper
+- [ ] Soporte para múltiples idiomas
+- [ ] Caché de resultados
+- [ ] Manejo de errores de API
+- [ ] Retry logic con backoff
+- [ ] Tests con mocks
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Precisión > 90%
+- Latencia < 2 segundos
+- Soporte bilingüe (español/inglés)"
+
+# Issue #4: LLM Integration - OpenAI
+gh issue create \
+  --repo "$REPO" \
+  --title "LLM Integration - OpenAI" \
+  --label "llm,core,api-integration" \
+  --body "## Descripción
+Implementar la integración con OpenAI para generar respuestas conversacionales.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Clase \`LLMProvider\` base
+- [x] Estructura de \`OpenAILLM\`
+- [ ] Implementación real de generación con GPT
+- [ ] Soporte para system prompts personalizados
+- [ ] Manejo de contexto conversacional
+- [ ] Retry logic y rate limiting
+- [ ] Validación de respuestas
+- [ ] Tests con mocks
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Respuestas coherentes y contextualizadas
+- Soporte para system prompts
+- Manejo de errores de rate limiting"
+
+# Issue #5: Text-to-Speech Integration
+gh issue create \
+  --repo "$REPO" \
+  --title "Text-to-Speech Integration" \
+  --label "tts,core,audio" \
+  --body "## Descripción
+Implementar Text-to-Speech usando pyttsx3 (sin API) como solución offline-first.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Clase \`TTSProvider\` base
+- [x] Estructura de \`Pyttsx3TTS\`
+- [ ] Implementación real de síntesis con pyttsx3
+- [ ] Control de velocidad (TTS_RATE)
+- [ ] Control de volumen
+- [ ] Soporte para múltiples voces
+- [ ] Conversión a array NumPy
+- [ ] Tests
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Voz natural y legible
+- Latencia < 1 segundo por oración
+- Funciona offline"
+
+# Issue #6: Agent Core Loop - Orquestación
+gh issue create \
+  --repo "$REPO" \
+  --title "Agent Core Loop - Orquestación" \
+  --label "core,asyncio,architecture" \
+  --body "## Descripción
+Implementar el loop principal del agente que orquesta todos los componentes en tiempo real.
+
+**Prioridad**: Alta
+
+## Requisitos
+- [x] Estructura básica de \`VoiceAgent\`
+- [ ] Inicialización y cleanup de componentes
+- [ ] Loop principal no-bloqueante
+- [ ] State machine completamente funcional
+- [ ] Gestión de timeouts
+- [ ] Manejo de errores robusto
+- [ ] Logging comprehensivo
+- [ ] Tests de integración
+- [ ] Documentación
+
+## Criterios de Aceptación
+- Latencia end-to-end < 5 segundos
+- Operaciones completamente asincrónicas
+- State transitions correctas"
+
+# Issue #7: Configuration Management
+gh issue create \
+  --repo "$REPO" \
+  --title "Configuration Management" \
+  --label "configuration,enhancement" \
+  --body "## Descripción
+Mejorar el sistema de configuración para soportar múltiples entornos y providers.
+
+**Prioridad**: Media
+
+## Requisitos
+- [x] Sistema de \`.env\` con validación
+- [ ] Soporte para múltiples profiles (dev, prod, test)
+- [ ] Validación de tipos para config
+- [ ] Documentación de todas las opciones
+- [ ] Ejemplos de configuración
+- [ ] Defaults sensatos
+
+## Criterios de Aceptación
+- Fácil cambio entre providers
+- Configuración escalable
+- Validación robusta"
+
+# Issue #8: Testing Suite
+gh issue create \
+  --repo "$REPO" \
+  --title "Testing Suite" \
+  --label "testing,quality" \
+  --body "## Descripción
+Crear suite completa de tests unitarios e integración.
+
+**Prioridad**: Media
+
+## Requisitos
+- [ ] Tests unitarios para cada componente
+- [ ] Tests de integración del pipeline
+- [ ] Mocks para APIs externas
+- [ ] Fixtures reutilizables
+- [ ] Coverage report
+- [ ] CI/CD configuration
+
+## Criterios de Aceptación
+- Coverage > 80%
+- Todos los tests pasan
+- Tests ejecutables con pytest"
+
+# Issue #9: Documentation
+gh issue create \
+  --repo "$REPO" \
+  --title "Documentation" \
+  --label "documentation" \
+  --body "## Descripción
+Crear documentación completa del proyecto.
+
+**Prioridad**: Media
+
+## Requisitos
+- [x] README.md profesional
+- [x] CLIENT_BRIEF.md
+- [x] docs/architecture.md
+- [x] docs/setup.md
+- [x] docs/api.md
+- [ ] Ejemplos de uso completos
+- [ ] Troubleshooting guide
+- [ ] Contributing guide
+
+## Criterios de Aceptación
+- Documentación clara y completa
+- Ejemplos funcionales
+- Fácil onboarding para nuevos desarrolladores"
+
+# Issue #10: Voice Activity Detection (VAD)
+gh issue create \
+  --repo "$REPO" \
+  --title "Voice Activity Detection (VAD)" \
+  --label "enhancement,audio" \
+  --body "## Descripción
+Implementar detección automática de actividad de voz para mejorar la experiencia.
+
+**Prioridad**: Baja
+
+## Requisitos
+- [ ] Implementación de VAD simple
+- [ ] Configuración de sensibilidad
+- [ ] Integración con microphone module
+- [ ] Tests
+
+## Criterios de Aceptación
+- Detecta correctamente inicio y fin de habla
+- Mejora la experiencia del usuario"
+
+# Issue #11: Multi-turn Context
+gh issue create \
+  --repo "$REPO" \
+  --title "Multi-turn Context" \
+  --label "enhancement,llm" \
+  --body "## Descripción
+Mejorar el manejo de contexto conversacional para mantener conversaciones más naturales.
+
+**Prioridad**: Baja
+
+## Requisitos
+- [ ] State machine mejorada para contexto
+- [ ] Historia de conversación persistente
+- [ ] Ventana de contexto configurable
+- [ ] Tests"
+
+# Issue #12: Error Recovery
+gh issue create \
+  --repo "$REPO" \
+  --title "Error Recovery" \
+  --label "reliability,core" \
+  --body "## Descripción
+Implementar recuperación robusta de errores en el pipeline.
+
+**Prioridad**: Media
+
+## Requisitos
+- [ ] Retry logic para operaciones fallidas
+- [ ] Fallback providers
+- [ ] Recuperación de estado
+- [ ] User feedback mejorado
+
+## Criterios de Aceptación
+- Recuperación automática de fallos temporales
+- User experience no se degrada significativamente"
+
+echo ""
+echo "✅ All 12 issues created successfully!"
